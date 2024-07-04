@@ -1,0 +1,103 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="row my-3">
+    <div class="col-12 p-3 mb-3 bg-light rounded-3">
+        <h1 class="display-5 fw-bold">Generador de Tabla</h1>
+        <form id="tableForm">
+            <div class="mb-3">
+                <label for="rowInput" class="form-label">Cantidad de Filas</label>
+                <input type="number" class="form-control" id="rowInput" placeholder="Ingresa la cantidad de filas" required>
+            </div>
+            <div class="mb-3">
+                <label for="columnInput" class="form-label">Cantidad de Columnas</label>
+                <input type="number" class="form-control" id="columnInput" placeholder="Ingresa la cantidad de columnas" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Generar Tabla</button>
+        </form>
+    </div>
+</div>
+<div class="row my-3">
+    <div class="col-12 p-3 bg-light rounded-3">
+        <h1 class="display-5 fw-bold hidden" id="title_table">Tabla Generada</h1>
+        <form id="generatedTableForm">
+            <div id="tableContainer" class="custom-table"></div>
+            <button type="button" class="btn btn-primary hidden" id="submitButton" onclick="capturarDatos()">Enviar Datos</button>
+        </form>
+    </div>
+</div>
+<div class="row my-3">
+    <div class="col-12">
+        <h3>Matriz de Datos Capturados</h3>
+        <pre id="matrizDatos"></pre>
+    </div>
+</div>
+
+<script>
+    document.getElementById('tableForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        generateTable();
+    });
+
+    function generateTable() {
+        const rows = document.getElementById('rowInput').value;
+        const columns = document.getElementById('columnInput').value;
+        const tableContainer = document.getElementById('tableContainer');
+        const submitButton = document.getElementById('submitButton');
+        let tableHtml = '<table class="table table-bordered"><thead><tr><th>#</th>';
+
+        for (let c = 1; c <= columns; c++) {
+            tableHtml += `<th>Columna ${c}</th>`;
+        }
+
+        tableHtml += '</tr></thead><tbody>';
+
+        for (let r = 1; r <= rows; r++) {
+            tableHtml += `<tr><th>Fila ${r}</th>`;
+            for (let c = 1; c <= columns; c++) {
+                tableHtml += `<td><input type="number" class="form-control" placeholder="0"></td>`;
+            }
+            tableHtml += '</tr>';
+        }
+
+        tableHtml += '</tbody></table>';
+        tableContainer.innerHTML = tableHtml;
+        submitButton.classList.remove('hidden');
+        title_table.classList.remove('hidden');
+    }
+
+    function capturarDatos() {
+        const table = document.getElementById('tableContainer').querySelector('table');
+        const rows = table.rows;
+        let matriz = [];
+
+        for (let i = 1; i < rows.length; i++) {
+            const rowData = [];
+            const cells = rows[i].cells;
+
+            for (let j = 1; j < cells.length; j++) {
+                const value = parseInt(cells[j].querySelector('input').value);
+                rowData.push(value);
+            }
+
+            matriz.push(rowData);
+        }
+
+        document.getElementById('matrizDatos').textContent = JSON.stringify(matriz);
+
+        // Enviar datos al servidor Flask
+        fetch('/api/receive-data', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(matriz)
+        })
+        .then(response => response.json())
+        .then(data => console.log('Respuesta del servidor:', data))
+        .catch(error => console.error('Error al enviar datos:', error));
+    }
+</script>
+
+{% endblock %}
