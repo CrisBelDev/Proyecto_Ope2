@@ -1,0 +1,57 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="row mt-5">
+    <div class="col">
+        <div class="accordion" id="accordionExample">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        Capítulo 5: Utilidad y Teoría de Juegos
+                    </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        <h2>1. Introducción a la Utilidad</h2>
+                        <p>La utilidad es un concepto fundamental en la toma de decisiones que refleja el valor que un individuo asigna a diferentes resultados. Se puede expresar como una función matemática que convierte resultados como ganancias y pérdidas en un valor de utilidad que refleja las preferencias personales hacia el riesgo.</p>
+                        <p><strong>Fórmula de Utilidad Esperada:</strong></p>
+                        <p>\( U(E) = \sum_{i=1}^n p_i \cdot u(x_i) \)</p>
+                        <p>Donde \( p_i \) son las probabilidades de diferentes resultados y \( u(x_i) \) son los valores de utilidad de esos resultados.</p>
+                        <p><em>Ejemplo de aplicación:</em> Consideremos un inversor que decide entre diferentes proyectos de inversión, cada uno con un nivel de riesgo y retorno esperado diferente.</p>
+
+                        <h2>2. Utilidad y Toma de Decisiones</h2>
+                        <p>En situaciones donde los resultados tienen diferentes niveles de riesgo asociados, la utilidad permite a los tomadores de decisiones evaluar opciones basadas en su utilidad esperada. Este enfoque ayuda a considerar no solo las ganancias esperadas sino también la aversión al riesgo del decisor.</p>
+                        <p><strong>Preguntas frecuentes:</strong> ¿Cómo se mide la aversión al riesgo? La aversión al riesgo se puede medir a través de la curvatura de la función de utilidad, donde una mayor curvatura indica una mayor aversión al riesgo.</p>
+
+                        <h2>3. Diferencias en la Percepción de Riesgo</h2>
+                        <p>Los individuos difieren en cómo perciben el riesgo, y esto puede influir en su toma de decisiones. Los evasores de riesgos prefieren opciones con menor variabilidad en los resultados, mientras que los tomadores de riesgos pueden preferir opciones con posibles altos rendimientos a pesar de mayores riesgos.</p>
+                        <p><em>Caso práctico:</em> Un empresario decide si expandir su negocio a un nuevo mercado, considerando tanto el potencial de altas ganancias como el riesgo de fracaso.</p>
+
+                        <h2>4. Introducción a la Teoría de Juegos</h2>
+                        <p>La teoría de juegos estudia decisiones estratégicas hechas en situaciones donde el éxito de las decisiones de un individuo depende de las decisiones tomadas por otros. Aquí se introduce la idea de juegos de suma cero para dos personas.</p>
+                        <p><strong>Ejemplo de un Juego de Suma Cero:</strong></p>
+                        <p>\[
+                        \begin{array}{c|cc}
+                         & \text{Jugador B: Opción 1} & \text{Jugador B: Opción 2} \\
+                        \hline
+                        \text{Jugador A: Opción 1} & 2, -2 & 3, -3 \\
+                        \text{Jugador A: Opción 2} & -1, 1 & 4, -4 \\
+                        \end{array}
+                        \]</p>
+                        <p><strong>Discusión:</strong> Analizamos cómo los jugadores pueden emplear estrategias para maximizar sus beneficios o minimizar sus pérdidas en función de las acciones de los demás.</p>
+
+                        <h2>5. Juegos de Estrategia Mixta</h2>
+                        <p>En la estrategia mixta, los jugadores randomizan entre diferentes opciones para evitar ser predecibles. Las estrategias óptimas a menudo involucran mezclar movimientos con ciertas probabilidades.</p>
+                        <p><strong>Ejemplo de Estrategia Mixta:</strong></p>
+                        <p>Para determinar las estrategias mixtas óptimas, se pueden resolver ecuaciones que balancean las expectativas de pago entre las diferentes estrategias.</p>
+                        <p><strong>Aplicación en negocios:</strong> Estrategias de precios en mercados competitivos donde las empresas deben ajustar constantemente sus estrategias para mantener una ventaja competitiva.</p>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

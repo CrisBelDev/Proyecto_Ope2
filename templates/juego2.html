@@ -1,0 +1,228 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+
+    
+    <div class="row mt-4">
+        <h1 class="text-center">Juego de Inspección y Control</h1>
+        <div class="col-8">
+            <div id="tableContainer" class="mt-4 fondo">
+                
+            </div>
+            <button id="submitButton" class="btn btn-success hidden mt-3" onclick="capturarDatos()">Calcular</button>
+        </div>
+        <div class="col-4">
+            <div id="alert-container" class="mt-3"></div>
+        </div>
+    </div>
+
+
+<script>
+generateTable();
+
+function generateTable() {
+    const rows = 2
+    const columns = 2
+    const tableContainer = document.getElementById('tableContainer');
+    const submitButton = document.getElementById('submitButton');
+    let tableHtml = '<table class="table table-primary table-bordered border-black"><thead><tr><th>#</th>';
+
+    for (let c = 1; c <= columns; c++) {
+        tableHtml += `<th>Interacción ${c}</th>`;
+    }
+    tableHtml += '<th>Mínimo</th>';  // Añadir columna para el mínimo de cada fila
+
+    tableHtml += '</tr></thead><tbody>';
+
+    for (let r = 1; r <= rows; r++) {
+        tableHtml += `<tr><th>Controlado ${r}</th>`;
+        for (let c = 1; c <= columns; c++) {
+            tableHtml += `<td><input type="number" class="form-control"  required></td>`;
+        }
+        tableHtml += '<td class="min-column"></td>';  // Añadir celda para el mínimo de cada fila, inicialmente vacía
+        tableHtml += '</tr>';
+    }
+
+    tableHtml += '<tr><th>Máximo</th>';  // Añadir fila para el máximo de cada columna
+    for (let c = 1; c <= columns; c++) {
+        tableHtml += '<td class="max-row"></td>';  // Inicialmente vacía
+    }
+    tableHtml += '<td></td></tr>';  // Celda vacía para la intersección de la columna mínima y la fila máxima
+
+    tableHtml += '</tbody></table>';
+    tableContainer.innerHTML = tableHtml;
+    submitButton.classList.remove('hidden');
+}
+
+function capturarDatos() {
+    const table = document.getElementById('tableContainer').querySelector('table');
+    const rows = table.rows;
+    let matriz = [];
+    const numColumns = rows[0].cells.length - 2;  // Número de columnas originales
+    let minValues = [];
+    let maxValues = [];
+
+    // Limpiar valores anteriores en la tabla y resetear colores
+    for (let i = 1; i < rows.length - 1; i++) {
+        const cells = rows[i].cells;
+        cells[numColumns + 1].textContent = '';  // Limpiar celdas de mínimos
+        cells[numColumns + 1].style.color = '';  // Resetear color del texto
+        cells[numColumns + 1].style.fontWeight = '';  // Resetear peso del texto
+    }
+    for (let j = 1; j <= numColumns; j++) {
+        const cells = rows[rows.length - 1].cells;
+        cells[j].textContent = '';  // Limpiar celdas de máximos
+        cells[j].style.color = '';  // Resetear color del texto
+        cells[j].style.fontWeight = '';  // Resetear peso del texto
+    }
+
+    // Calcular mínimos de las filas
+    for (let i = 1; i < rows.length - 1; i++) {  // Excluir la última fila que es para máximos
+        const rowData = [];
+        const cells = rows[i].cells;
+        let minVal = Infinity;
+
+        for (let j = 1; j <= numColumns; j++) {
+            const value = parseInt(cells[j].querySelector('input').value);
+            rowData.push(value);
+            if (value < minVal) {
+                minVal = value;
+            }
+            
+        }
+
+        minValues.push(minVal);
+        matriz.push(rowData);
+        cells[numColumns + 1].textContent = minVal;  // Actualizar la celda del mínimo
+    }
+
+    // Calcular el máximo de cada columna
+    for (let j = 1; j <= numColumns; j++) {
+        let maxVal = -Infinity;
+        for (let i = 1; i < rows.length - 1; i++) {
+            const value = parseInt(rows[i].cells[j].querySelector('input').value);
+            if (value > maxVal) {
+                maxVal = value;
+            }
+        }
+        maxValues.push(maxVal);
+        rows[rows.length - 1].cells[j].textContent = maxVal;  // Actualizar la celda del máximo
+    }
+
+    // Encontrar el mayor de los mínimos y el menor de los máximos
+    const maxOfMins = Math.max(...minValues);
+    const minOfMaxs = Math.min(...maxValues);
+
+    // Colorear y poner en negrita el mayor de los mínimos por un tiempo determinado
+    for (let i = 1; i < rows.length - 1; i++) {
+        const cells = rows[i].cells;
+        if (parseInt(cells[numColumns + 1].textContent) === maxOfMins) {
+            const originalColor = cells[numColumns + 1].style.color;
+            const originalFontWeight = cells[numColumns + 1].style.fontWeight;
+            const originalBackgroundColor = cells[numColumns + 1].style.backgroundColor;
+
+            cells[numColumns + 1].style.color = 'white';
+            cells[numColumns + 1].style.fontWeight = 'bold';
+            cells[numColumns + 1].style.backgroundColor = '#1e81b0';
+
+            setTimeout(() => {
+                cells[numColumns + 1].style.color = originalColor;
+                cells[numColumns + 1].style.fontWeight = originalFontWeight;
+                cells[numColumns + 1].style.backgroundColor = originalBackgroundColor;
+            }, 3000);  // Cambiar el color de nuevo después de 2 segundos
+
+            break;  // Marcar solo uno
+        }
+    }
+
+    // Colorear y poner en negrita el menor de los máximos por un tiempo determinado
+    for (let j = 1; j <= numColumns; j++) {
+        const cells = rows[rows.length - 1].cells;
+        if (parseInt(cells[j].textContent) === minOfMaxs) {
+            const originalColor = cells[j].style.color;
+            const originalFontWeight = cells[j].style.fontWeight;
+            const originalBackgroundColor = cells[j].style.backgroundColor;
+
+            cells[j].style.color = 'white';
+            cells[j].style.fontWeight = 'bold';
+            cells[j].style.backgroundColor = '#1e81b0';
+
+            setTimeout(() => {
+                cells[j].style.color = originalColor;
+                cells[j].style.fontWeight = originalFontWeight;
+                cells[j].style.backgroundColor = originalBackgroundColor;
+            }, 3000);  // Cambiar el color de nuevo después de 2 segundos
+
+            break;  // Marcar solo uno
+        }
+    }
+
+    // Mostrar mensaje sobre la estrategia
+    const alertContainer = document.getElementById('alert-container');
+    alertContainer.innerHTML = '';
+    const alert = document.createElement('div');
+    alert.className = 'alert';
+    if (maxOfMins === minOfMaxs) {
+        alert.className += ' alert-success';
+        alert.textContent = 'Es una estrategia pura : Se ha identificado una estrategia pura. Uno de los jugadores tiene una opción dominante que maximiza su beneficio o minimiza su pérdida, independientemente de las acciones del oponente.';
+    } else {
+        alert.className += ' alert-warning';
+        alert.textContent = 'Es una estrategia mixta';
+        calcularEstrategias2x2(matriz);
+
+    }
+    alertContainer.appendChild(alert);
+
+
+    console.log(matriz,"minmax", minOfMaxs, "maxmin ", maxOfMins)
+
+
+
+    
+    document.getElementById('matrizDatos').textContent = JSON.stringify(matriz);
+
+    // Enviar datos al servidor Flask (opcional)
+    fetch('/api/receive-data', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(matriz)
+    })
+    .then(response => response.json())
+    .then(data => console.log('Respuesta del servidor:', data))
+    .catch(error => console.error('Error al enviar datos:', error));
+}
+
+function calcularEstrategias2x2(matriz) {
+    let a = matriz[0][0]; // 1
+    let b = matriz[0][1]; // 6
+    let c = matriz[1][0]; // 15
+    let d = matriz[1][1]; // 0
+
+    // Calcular q
+    let q = (d - b) / (a - b - c + d);
+
+    // Calcular p
+    let p = (d - c) / (a - c - b + d);
+
+    // Crear mensaje para la alerta
+    let message = `Es una estrategia mixta.! <br>Probabilidades calculadas:<br> p = ${p.toFixed(2)} <br> q = ${q.toFixed(2)}`;
+
+    // Seleccionar o crear el contenedor de alertas
+    let alertContainer = document.getElementById('alert-container');
+    alertContainer.innerHTML = ''; // Limpiar cualquier alerta existente
+
+    // Crear la alerta de Bootstrap
+    let alert = document.createElement('div');
+    alert.className = 'alert alert-success';
+    alert.role = 'alert';
+    alert.innerHTML = message;
+
+    // Añadir la alerta al contenedor
+    alertContainer.appendChild(alert);
+}
+</script>
+
+{% endblock %}

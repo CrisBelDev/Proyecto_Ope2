@@ -1,103 +1,102 @@
 {% extends "layout.html" %}
 
 {% block content %}
-
-<div class="row my-3">
-    <div class="col-12 p-3 mb-3 bg-light rounded-3">
-        <h1 class="display-5 fw-bold">Generador de Tabla</h1>
-        <form id="tableForm">
-            <div class="mb-3">
-                <label for="rowInput" class="form-label">Cantidad de Filas</label>
-                <input type="number" class="form-control" id="rowInput" placeholder="Ingresa la cantidad de filas" required>
+<div class="row mt-4">
+    <div class="col-6">
+        <h3>Conceptos Básicos de la Teoría de Juegos</h3>
+        <ul>
+            <li><b>Jugadores:</b> Cada participante en el juego es considerado un "jugador". Los jugadores pueden ser individuos o grupos, como partidos políticos o empresas.</li>
+            <li><b>Estrategias:</b> Cada jugador cuenta con un conjunto de movimientos o estrategias disponibles, que pueden ser limitadas o virtualmente infinitas.</li>
+            <li><b>Matriz de Pagos:</b> Las posibles consecuencias de las estrategias elegidas se resumen en lo que llamamos una matriz de pagos, que muestra los resultados asociados a cada combinación de estrategias entre los jugadores.</li>
+        </ul>
+    
+        <h3>Tipos de Juegos</h3>
+        <p>Uno de los ejemplos más claros es el juego de suma cero para dos jugadores, donde lo que gana un jugador es exactamente lo que pierde el otro. Antes de que el juego comience, cada jugador conoce sus propias estrategias, las de su adversario y cómo estas pueden traducirse en ganancias o pérdidas según la matriz de pagos.</p>
+        
+        
+        
+    </div>
+            <div class="col-6">
+                <b>¿Cómo se Juega?</b>
+                <p>En un escenario típico, ambos jugadores seleccionan una estrategia simultáneamente, sin saber cuál estrategia ha escogido el otro.<br>
+                El Jugador A tiene las estrategias \(A_1, A_2, \ldots, A_n\).<br>
+                El Jugador B tiene las estrategias \(B_1, B_2, \ldots, B_m\).<br>
+                Donde \(n > m\), \(n < m\) ó \(n = m\).<br>
+                La matriz de pagos correspondiente será:</p>
+    
+                <table class="table table-responsive table-bordered text-center border-black">
+                    <thead>
+                        <tr>
+                            <th scope="col"></th>
+                            <th scope="col">\(B_1\)</th>
+                            <th scope="col">\(B_2\)</th>
+                            <th scope="col">\(\ldots\)</th>
+                            <th scope="col">\(B_j\)</th>
+                            <th scope="col">\(\ldots\)</th>
+                            <th scope="col">\(B_m\)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>\(A_1\)</td>
+                            <td>\(a_{11}\)</td>
+                            <td>\(a_{12}\)</td>
+                            <td>\(\ldots\)</td>
+                            <td>\(a_{1j}\)</td>
+                            <td>\(\ldots\)</td>
+                            <td>\(a_{1m}\)</td>
+                        </tr>
+                        <tr>
+                            <td>\(A_2\)</td>
+                            <td>\(a_{21}\)</td>
+                            <td>\(a_{22}\)</td>
+                            <td>\(\ldots\)</td>
+                            <td>\(a_{2j}\)</td>
+                            <td>\(\ldots\)</td>
+                            <td>\(a_{2m}\)</td>
+                        </tr>
+                        <tr>
+                            <td>\(\ldots\)</td>
+                            <td>\(\ldots\)</td>
+                            <td>\(\ldots\)</td>
+                            <td>\(\ldots\)</td>
+                            <td>\(\ldots\)</td>
+                            <td>\(\ldots\)</td>
+                            <td>\(\ldots\)</td>
+                        </tr>
+                        <tr>
+                            <td>\(A_i\)</td>
+                            <td>\(a_{i1}\)</td>
+                            <td>\(a_{i2}\)</td>
+                            <td>\(\ldots\)</td>
+                            <td>\(a_{ij}\)</td>
+                            <td>\(\ldots\)</td>
+                            <td>\(a_{im}\)</td>
+                        </tr>
+                        <tr>
+                            <td>\(\ldots\)</td>
+                            <td>\(\ldots\)</td>
+                            <td>\(\ldots\)</td>
+                            <td>\(\ldots\)</td>
+                            <td>\(\ldots\)</td>
+                            <td>\(\ldots\)</td>
+                            <td>\(\ldots\)</td>
+                        </tr>
+                        <tr>
+                            <td>\(A_n\)</td>
+                            <td>\(a_{n1}\)</td>
+                            <td>\(a_{n2}\)</td>
+                            <td>\(\ldots\)</td>
+                            <td>\(a_{nj}\)</td>
+                            <td>\(\ldots\)</td>
+                            <td>\(a_{nm}\)</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p>Donde \(a_{ij}\) es la cantidad ganada por el jugador A, cuando A elige la alternativa \(A_i\) y el jugador B elige la alternativa \(B_j\).</p>
             </div>
-            <div class="mb-3">
-                <label for="columnInput" class="form-label">Cantidad de Columnas</label>
-                <input type="number" class="form-control" id="columnInput" placeholder="Ingresa la cantidad de columnas" required>
-            </div>
-            <button type="submit" class="btn btn-primary">Generar Tabla</button>
-        </form>
-    </div>
+
+    
+    
 </div>
-<div class="row my-3">
-    <div class="col-12 p-3 bg-light rounded-3">
-        <h1 class="display-5 fw-bold hidden" id="title_table">Tabla Generada</h1>
-        <form id="generatedTableForm">
-            <div id="tableContainer" class="custom-table"></div>
-            <button type="button" class="btn btn-primary hidden" id="submitButton" onclick="capturarDatos()">Enviar Datos</button>
-        </form>
-    </div>
-</div>
-<div class="row my-3">
-    <div class="col-12">
-        <h3>Matriz de Datos Capturados</h3>
-        <pre id="matrizDatos"></pre>
-    </div>
-</div>
-
-<script>
-    document.getElementById('tableForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        generateTable();
-    });
-
-    function generateTable() {
-        const rows = document.getElementById('rowInput').value;
-        const columns = document.getElementById('columnInput').value;
-        const tableContainer = document.getElementById('tableContainer');
-        const submitButton = document.getElementById('submitButton');
-        let tableHtml = '<table class="table table-bordered"><thead><tr><th>#</th>';
-
-        for (let c = 1; c <= columns; c++) {
-            tableHtml += `<th>Columna ${c}</th>`;
-        }
-
-        tableHtml += '</tr></thead><tbody>';
-
-        for (let r = 1; r <= rows; r++) {
-            tableHtml += `<tr><th>Fila ${r}</th>`;
-            for (let c = 1; c <= columns; c++) {
-                tableHtml += `<td><input type="number" class="form-control" placeholder="0"></td>`;
-            }
-            tableHtml += '</tr>';
-        }
-
-        tableHtml += '</tbody></table>';
-        tableContainer.innerHTML = tableHtml;
-        submitButton.classList.remove('hidden');
-        title_table.classList.remove('hidden');
-    }
-
-    function capturarDatos() {
-        const table = document.getElementById('tableContainer').querySelector('table');
-        const rows = table.rows;
-        let matriz = [];
-
-        for (let i = 1; i < rows.length; i++) {
-            const rowData = [];
-            const cells = rows[i].cells;
-
-            for (let j = 1; j < cells.length; j++) {
-                const value = parseInt(cells[j].querySelector('input').value);
-                rowData.push(value);
-            }
-
-            matriz.push(rowData);
-        }
-
-        document.getElementById('matrizDatos').textContent = JSON.stringify(matriz);
-
-        // Enviar datos al servidor Flask
-        fetch('/api/receive-data', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(matriz)
-        })
-        .then(response => response.json())
-        .then(data => console.log('Respuesta del servidor:', data))
-        .catch(error => console.error('Error al enviar datos:', error));
-    }
-</script>
-
 {% endblock %}

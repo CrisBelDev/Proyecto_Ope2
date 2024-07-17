@@ -1,0 +1,226 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="row my-3">
+    <h1 class="display-5 fw-bold">Teoria de juegos</h1>
+    <div class="col-3 p-3 mb-3 bg-light rounded-3">
+        
+        <form id="tableForm">
+            <div class="mb-3">
+                <label for="rowInput" class="form-label">Cantidad de Filas</label>
+                <input type="number" class="form-control" id="rowInput" placeholder="Ingresa la cantidad de filas" required>
+            </div>
+            <div class="mb-3">
+                <label for="columnInput" class="form-label">Cantidad de Columnas</label>
+                <input type="number" class="form-control" id="columnInput" placeholder="Ingresa la cantidad de columnas" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Generar Tabla</button>
+        </form>
+    </div>
+    <div class="col p-3 bg-light rounded-3">
+        <h3 class="display-5 fw-bold hidden" id="title_table">Tabla Generada Jugador A vs B</h3>
+        <form id="generatedTableForm">
+            <div id="tableContainer" class="custom-table"></div>
+            <button type="button" class="btn btn-primary hidden" id="submitButton" onclick="capturarDatos()">Enviar Datos</button>
+        </form>
+</div>
+<div class="row">
+    <div class="col-12" id="alert-container">
+
+    </div>
+</div>
+</div>
+<div class="row my-3">
+    <div class="col-12">
+        <h3>Matriz de Datos Capturados</h3>
+        <pre id="matrizDatos"></pre>
+    </div>
+
+</div>
+
+<div class="row">
+    <div class="col">
+        <p>
+            Aquí tenemos una integral en su propio bloque:
+            \[ \int_0^1 x^2 \, dx \]
+          </p>
+          
+    </div>
+</div>
+
+<script>
+document.getElementById('tableForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    generateTable();
+});
+
+function generateTable() {
+    const rows = document.getElementById('rowInput').value;
+    const columns = document.getElementById('columnInput').value;
+    const tableContainer = document.getElementById('tableContainer');
+    const submitButton = document.getElementById('submitButton');
+    let tableHtml = '<table class="table table-bordered"><thead><tr><th>#</th>';
+
+    for (let c = 1; c <= columns; c++) {
+        tableHtml += `<th>b${c}</th>`;
+    }
+    tableHtml += '<th>Mínimo</th>';  // Añadir columna para el mínimo de cada fila
+
+    tableHtml += '</tr></thead><tbody>';
+
+    for (let r = 1; r <= rows; r++) {
+        tableHtml += `<tr><th>a${r}</th>`;
+        for (let c = 1; c <= columns; c++) {
+            tableHtml += `<td><input type="number" class="form-control" placeholder="0"></td>`;
+        }
+        tableHtml += '<td class="min-column"></td>';  // Añadir celda para el mínimo de cada fila, inicialmente vacía
+        tableHtml += '</tr>';
+    }
+
+    tableHtml += '<tr><th>Máximo</th>';  // Añadir fila para el máximo de cada columna
+    for (let c = 1; c <= columns; c++) {
+        tableHtml += '<td class="max-row"></td>';  // Inicialmente vacía
+    }
+    tableHtml += '<td></td></tr>';  // Celda vacía para la intersección de la columna mínima y la fila máxima
+
+    tableHtml += '</tbody></table>';
+    tableContainer.innerHTML = tableHtml;
+    submitButton.classList.remove('hidden');
+    title_table.classList.remove('hidden');
+}
+
+function capturarDatos() {
+    const table = document.getElementById('tableContainer').querySelector('table');
+    const rows = table.rows;
+    let matriz = [];
+    const numColumns = rows[0].cells.length - 2;  // Número de columnas originales
+    let minValues = [];
+    let maxValues = [];
+
+    // Limpiar valores anteriores en la tabla y resetear colores
+    for (let i = 1; i < rows.length - 1; i++) {
+        const cells = rows[i].cells;
+        cells[numColumns + 1].textContent = '';  // Limpiar celdas de mínimos
+        cells[numColumns + 1].style.color = '';  // Resetear color del texto
+        cells[numColumns + 1].style.fontWeight = '';  // Resetear peso del texto
+    }
+    for (let j = 1; j <= numColumns; j++) {
+        const cells = rows[rows.length - 1].cells;
+        cells[j].textContent = '';  // Limpiar celdas de máximos
+        cells[j].style.color = '';  // Resetear color del texto
+        cells[j].style.fontWeight = '';  // Resetear peso del texto
+    }
+
+    // Calcular mínimos de las filas
+    for (let i = 1; i < rows.length - 1; i++) {  // Excluir la última fila que es para máximos
+        const rowData = [];
+        const cells = rows[i].cells;
+        let minVal = Infinity;
+
+        for (let j = 1; j <= numColumns; j++) {
+            const value = parseInt(cells[j].querySelector('input').value);
+            rowData.push(value);
+            if (value < minVal) {
+                minVal = value;
+            }
+        }
+
+        minValues.push(minVal);
+        matriz.push(rowData);
+        cells[numColumns + 1].textContent = minVal;  // Actualizar la celda del mínimo
+    }
+
+    // Calcular el máximo de cada columna
+    for (let j = 1; j <= numColumns; j++) {
+        let maxVal = -Infinity;
+        for (let i = 1; i < rows.length - 1; i++) {
+            const value = parseInt(rows[i].cells[j].querySelector('input').value);
+            if (value > maxVal) {
+                maxVal = value;
+            }
+        }
+        maxValues.push(maxVal);
+        rows[rows.length - 1].cells[j].textContent = maxVal;  // Actualizar la celda del máximo
+    }
+
+    // Encontrar el mayor de los mínimos y el menor de los máximos
+    const maxOfMins = Math.max(...minValues);
+    const minOfMaxs = Math.min(...maxValues);
+
+   // Colorear y poner en negrita el mayor de los mínimos por un tiempo determinado
+   for (let i = 1; i < rows.length - 1; i++) {
+        const cells = rows[i].cells;
+        if (parseInt(cells[numColumns + 1].textContent) === maxOfMins) {
+            const originalColor = cells[numColumns + 1].style.color;
+            const originalFontWeight = cells[numColumns + 1].style.fontWeight;
+            const originalBackgroundColor = cells[numColumns + 1].style.backgroundColor;
+
+            cells[numColumns + 1].style.color = 'white';
+            cells[numColumns + 1].style.fontWeight = 'bold';
+            cells[numColumns + 1].style.backgroundColor = '#1e81b0';
+
+            setTimeout(() => {
+                cells[numColumns + 1].style.color = originalColor;
+                cells[numColumns + 1].style.fontWeight = originalFontWeight;
+                cells[numColumns + 1].style.backgroundColor = originalBackgroundColor;
+            }, 2000);  // Cambiar el color de nuevo después de 2 segundos
+
+            break;  // Marcar solo uno
+        }
+    }
+
+    // Colorear y poner en negrita el menor de los máximos por un tiempo determinado
+    for (let j = 1; j <= numColumns; j++) {
+        const cells = rows[rows.length - 1].cells;
+        if (parseInt(cells[j].textContent) === minOfMaxs) {
+            const originalColor = cells[j].style.color;
+            const originalFontWeight = cells[j].style.fontWeight;
+            const originalBackgroundColor = cells[j].style.backgroundColor;
+
+            cells[j].style.color = 'white';
+            cells[j].style.fontWeight = 'bold';
+            cells[j].style.backgroundColor = '#1e81b0';
+
+            setTimeout(() => {
+                cells[j].style.color = originalColor;
+                cells[j].style.fontWeight = originalFontWeight;
+                cells[j].style.backgroundColor = originalBackgroundColor;
+            }, 2000);  // Cambiar el color de nuevo después de 2 segundos
+
+            break;  // Marcar solo uno
+        }
+    }
+
+    // Mostrar mensaje sobre la estrategia
+    const alertContainer = document.getElementById('alert-container');
+    alertContainer.innerHTML = '';
+    const alert = document.createElement('div');
+    alert.className = 'alert';
+    if (maxOfMins === minOfMaxs) {
+        alert.className += ' alert-success';
+        alert.textContent = 'Es una estrategia pura';
+    } else {
+        alert.className += ' alert-warning';
+        alert.textContent = 'Es una estrategia mixta';
+    }
+    alertContainer.appendChild(alert);
+
+    document.getElementById('matrizDatos').textContent = JSON.stringify(matriz);
+
+    // Enviar datos al servidor Flask
+    fetch('/api/receive-data', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(matriz)
+    })
+    .then(response => response.json())
+    .then(data => console.log('Respuesta del servidor:', data))
+    .catch(error => console.error('Error al enviar datos:', error));
+}
+
+</script>
+
+{% endblock %}

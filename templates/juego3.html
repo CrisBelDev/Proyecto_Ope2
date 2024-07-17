@@ -1,0 +1,94 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="row mt-3" >
+    <div class="col-6">
+        <h2 style="text-align: center;">Dilema del Prisionero - Equilibrio de Nash</h2>
+        <p>
+            Había una vez dos amigos, Maria y Carlos, quienes eran conocidos en su ciudad por ser grandes aventureros. Un día, mientras exploraban una cueva misteriosa, se encontraron con un cofre lleno de joyas. Sin embargo, fueron sorprendidos por la policía, que los arrestó bajo sospecha de robo.
+        </p>
+        <p>Una vez en la comisaría, Maria y Carlos fueron interrogados por separado. El inspector a cargo del caso les ofreció a ambos el mismo trato:</p>
+        <ul>
+            <li>Si Maria y Carlos permanecen en silencio (cooperan entre ellos), ambos recibirán una sentencia de 1 año de prisión por cargos menores.</li>
+            <li>Si Maria delata a Carlos (traiciona) y Carlos guarda silencio (cooperar), Maria será liberada inmediatamente y Carlos recibirá 5 años de prisión, y viceversa.</li>
+            <li>Si ambos se delatan entre sí (traicionan), ambos recibirán una sentencia de 3 años de prisión.</li>
+        </ul>
+    </div>
+    <div class="col-6 d-flex justify-content-center align-items-center">
+        <img src="{{ url_for('static', filename='dilema.webp') }}" class="rounded mx-auto d-block" width="90%" height="90%" alt="Dilema del Prisionero">
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <table class="table table-bordered ">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Confesar (P2)</th>
+                    <th>Mentir (P2)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Confesar (P1)</td>
+                    <td><input id="CC1" type="number" value="-1">, <input id="CC2" type="number" value="-1"></td>
+                    <td><input id="CM1" type="number" value="-5">, <input id="CM2" type="number" value="0"></td>
+                </tr>
+                <tr>
+                    <td>Mentir (P1)</td>
+                    <td><input id="MC1" type="number" value="0">, <input id="MC2" type="number" value="-5"></td>
+                    <td><input id="MM1" type="number" value="-3">, <input id="MM2" type="number" value="-3"></td>
+                </tr>
+            </tbody>
+        </table>
+        <div style="text-align: center;">
+            <button class="btn btn-success" onclick="calcularEquilibrio()">Calcular Equilibrios de Nash</button>
+            <div id="resultado" class="alert alert-success"></div>
+        </div>
+    </div>
+</div>
+    <script>
+function calcularEquilibrio() {
+    const CC1 = parseInt(document.getElementById('CC1').value, 10);
+    const CC2 = parseInt(document.getElementById('CC2').value, 10);
+    const CM1 = parseInt(document.getElementById('CM1').value, 10);
+    const CM2 = parseInt(document.getElementById('CM2').value, 10);
+    const MC1 = parseInt(document.getElementById('MC1').value, 10);
+    const MC2 = parseInt(document.getElementById('MC2').value, 10);
+    const MM1 = parseInt(document.getElementById('MM1').value, 10);
+    const MM2 = parseInt(document.getElementById('MM2').value, 10);
+
+    let mensaje = "Equilibrios de Nash encontrados:<br>";
+
+    // Verificar equilibrios de Nash
+    // Confesar-Confesar
+    if (CC1 >= MC1 && CC2 >= CM2) {
+        mensaje += `Confesar-Confesar (${CC1}, ${CC2})<br>`;
+    }
+    // Confesar-Mentir
+    if (CM1 >= MM1 && CM2 >= CC2) {
+        mensaje += `Confesar-Mentir (${CM1}, ${CM2})<br>`;
+    }
+    // Mentir-Confesar
+    if (MC1 >= CC1 && MC2 >= MM2) {
+        mensaje += `Mentir-Confesar (${MC1}, ${MC2})<br>`;
+    }
+    // Mentir-Mentir
+    if (MM1 >= CM1 && MM2 >= MC2) {
+        mensaje += `Mentir-Mentir (${MM1}, ${MM2})<br>`;
+    }
+
+    // Si no se encuentra ningún equilibrio, ajustar mensaje
+    if (mensaje === "Equilibrios de Nash encontrados:<br>") {
+        mensaje = "No se encontraron equilibrios de Nash.";
+    }
+    mensaje += 'El dilema muestra que, aunque la mejor opción conjunta sería cooperar (1 año de prisión cada uno), la estrategia dominante para ambos es traicionar, ya que minimiza el peor resultado posible individualmente.<br> En términos de teoría de juegos, la traición es el equilibrio de Nash, ya que ninguna de las partes mejora su situación al cambiar su estrategia, dado que el otro también está traicionando.<br> Por lo tanto, ambos terminan recibiendo 3 años de prisión.'
+
+    document.getElementById('resultado').innerHTML = mensaje;
+}
+
+
+    </script>
+
+{% endblock %}

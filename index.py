@@ -6,12 +6,25 @@ app = Flask(__name__)
 def home():
      return render_template('home.html')
  
-@app.route('/about')
-def about():
-     return render_template('about.html')
+@app.route('/conceptos')
+def conceptos():
+     return render_template('conceptos.html')
 
+@app.route('/teoria')
+def teoria():
+     return render_template('teoria.html')
 
+@app.route('/juego1')
+def juego1():
+     return render_template('juego1.html')
 
+@app.route('/juego2')
+def juego2():
+     return render_template('juego2.html')
+
+@app.route('/juego3')
+def juego3():
+     return render_template('juego3.html')
 
 @app.route('/api/receive-data', methods=['POST'])
 def receive_data():
@@ -25,3 +38,5 @@ def receive_data():
  
 if __name__ == '__main__':
     app.run(debug=True)
+    
+    

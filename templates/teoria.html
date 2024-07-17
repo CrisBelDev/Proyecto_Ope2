@@ -1,0 +1,72 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <style>
+        .game-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .game-table th, .game-table td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: center;
+        }
+        .game-table th {
+            background-color: #f2f2f2;
+        }
+        .game-table caption {
+            font-size: 1.2em;
+            margin: 10px;
+        }
+    </style>
+
+    <div class="container mt-5">
+        <h1>Introducción a la Teoría de Juegos</h1>
+        <p>La teoría de juegos es un marco matemático utilizado para analizar las interacciones entre agentes cuyas decisiones están interconectadas. Esta sección del capítulo explora cómo las empresas pueden emplear diferentes estrategias en un ambiente competitivo, modelando estos escenarios como juegos de suma cero.</p>
+
+        <h2>Estrategias Competitivas Entre Empresa A y Empresa B</h2>
+        <p>Consideremos un juego donde dos empresas, A y B, compiten en el mercado y pueden optar por diversas estrategias como aumentar la publicidad, ofrecer descuentos o extender las garantías. La elección de cada empresa afectará sus propios resultados así como los de su competidor.</p>
+
+        <table class="game-table">
+            <caption>Tabla de Interacciones Estratégicas</caption>
+            <thead>
+                <tr>
+                    <th>Empresa A \ Empresa B</th>
+                    <th>Aumentar la publicidad \(b_1\)</th>
+                    <th>Descuentos por cantidad \(b_2\)</th>
+                    <th>Extensión de la garantía \(b_3\)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Aumentar la publicidad \(a_1\)</td>
+                    <td>4</td>
+                    <td>3</td>
+                    <td>2</td>
+                </tr>
+                <tr>
+                    <td>Descuentos por cantidad \(a_2\)</td>
+                    <td>−1</td>
+                    <td>4</td>
+                    <td>1</td>
+                </tr>
+                <tr>
+                    <td>Extensión de la garantía \(a_3\)</td>
+                    <td>5</td>
+                    <td>−2</td>
+                    <td>0</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Análisis de Estrategias</h2>
+        <p>La matriz anterior muestra cómo cada combinación de estrategias afecta a las empresas. Por ejemplo, si ambas empresas eligen aumentar la publicidad, ambas ganan moderadamente. Sin embargo, si una opta por aumentar la publicidad mientras la otra ofrece descuentos, los resultados pueden variar significativamente.</p>
+        <p>Identificar el equilibrio de Nash en estas situaciones permite a cada empresa prever las reacciones del mercado y ajustar sus estrategias para obtener el mejor resultado posible bajo supuestos racionales.</p>
+
+        <h2>Conclusión</h2>
+        <p>Este análisis ayuda a las empresas a comprender cómo sus decisiones interactúan con las estrategias de los competidores, crucial para la planificación estratégica en ambientes competitivos.</p>
+    </div>
+
+
+    {% endblock %}
