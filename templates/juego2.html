@@ -5,7 +5,7 @@
 
     
     <div class="row mt-4">
-        <h1 class="text-center">Juego de Inspección y Control</h1>
+        <h1 class="text-center">Calculo de estrategias</h1>
         <div class="col-8">
             <div id="tableContainer" class="mt-4 fondo">
                 
@@ -29,14 +29,14 @@ function generateTable() {
     let tableHtml = '<table class="table table-primary table-bordered border-black"><thead><tr><th>#</th>';
 
     for (let c = 1; c <= columns; c++) {
-        tableHtml += `<th>Interacción ${c}</th>`;
+        tableHtml += `<th>B ${c}</th>`;
     }
     tableHtml += '<th>Mínimo</th>';  // Añadir columna para el mínimo de cada fila
 
     tableHtml += '</tr></thead><tbody>';
 
     for (let r = 1; r <= rows; r++) {
-        tableHtml += `<tr><th>Controlado ${r}</th>`;
+        tableHtml += `<tr><th>A ${r}</th>`;
         for (let c = 1; c <= columns; c++) {
             tableHtml += `<td><input type="number" class="form-control"  required></td>`;
         }
